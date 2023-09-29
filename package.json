@@ -2,19 +2,20 @@
   "name": "autodashboard",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "scripts": {
-    "dev": "NEXT_TELEMETRY_DISABLED=1 node server.js",
+    "dev": "NEXT_TELEMETRY_DISABLED=1 next dev -p 80",
     "build": "rm -rf .next && NEXT_TELEMETRY_DISABLED=1 next build && tar $(cat package.json | jq .version)",
     "start": "NEXT_TELEMETRY_DISABLED=1 next start -p 80",
     "lint": "NEXT_TELEMETRY_DISABLED=1 next lint"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.4.2",
+    "@fortawesome/free-regular-svg-icons": "^6.4.2",
+    "@fortawesome/free-solid-svg-icons": "^6.4.2",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "next": "latest",
-    "node-fetch": "^3.3.2",
     "react": "latest",
-    "react-dom": "latest",
-    "xml2js": "^0.6.2"
+    "react-dom": "latest"
   },
   "devDependencies": {
     "autoprefixer": "latest",
