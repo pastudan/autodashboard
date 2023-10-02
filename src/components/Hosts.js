@@ -15,7 +15,6 @@ import * as svg from "@/svgjs/index.js";
 import oui from "../oui/oui.json";
 
 const fields = [
-  "deviceType",
   "ip",
   "mac", //key
 ];
@@ -46,42 +45,42 @@ async function copyToClipboard(textToCopy) {
   }
 }
 
-function renderIconHosts({ hosts }) {
-  return (
-    <>
-      <h2 className="text-lg font-semibold px-8 mt-8 container mx-auto">
-        Devices
-      </h2>
-      <div className="container px-8 mx-auto mt-4 flex">
-        {hosts.map((host) => {
-          return (
-            <div
-              key={host.ip}
-              className="flex flex-col items-center justify-center w-32 h-32 bg-gray-100 rounded-md shadow-md mx-2 my-2"
-            >
-              {host.vendor === "Amazon" && (
-                <img src={echoDot.src} className="w-16" />
-              )}
-              {host.vendor === "Google," && (
-                <img src={nestHub.src} className="w-16" />
-              )}
-              {host.vendor === "Tp-Link" && (
-                <img src={tplinkEap.src} className="w-16" />
-              )}
-              {host.vendor === "TP-Link" && (
-                <img src={tplinkEr605.src} className="w-16" />
-              )}
-              <div className="text-sm text-gray-700">{host.ip}</div>
-              <div className="text-sm text-gray-700">
-                {host.vendor} {host.deviceType}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </>
-  );
-}
+// function renderIconHosts({ hosts }) {
+//   return (
+//     <>
+//       <h2 className="text-lg font-semibold px-8 mt-8 container mx-auto">
+//         Devices
+//       </h2>
+//       <div className="container px-8 mx-auto mt-4 flex">
+//         {hosts.map((host) => {
+//           return (
+//             <div
+//               key={host.ip}
+//               className="flex flex-col items-center justify-center w-32 h-32 bg-gray-100 rounded-md shadow-md mx-2 my-2"
+//             >
+//               {host.vendor === "Amazon" && (
+//                 <img src={echoDot.src} className="w-16" />
+//               )}
+//               {host.vendor === "Google," && (
+//                 <img src={nestHub.src} className="w-16" />
+//               )}
+//               {host.vendor === "Tp-Link" && (
+//                 <img src={tplinkEap.src} className="w-16" />
+//               )}
+//               {host.vendor === "TP-Link" && (
+//                 <img src={tplinkEr605.src} className="w-16" />
+//               )}
+//               <div className="text-sm text-gray-700">{host.ip}</div>
+//               <div className="text-sm text-gray-700">
+//                 {host.vendor} {host.deviceType}
+//               </div>
+//             </div>
+//           );
+//         })}
+//       </div>
+//     </>
+//   );
+// }
 
 function renderTableHosts({ hosts }) {
   const [sortKey, setSortKey] = useState("vendor");
@@ -106,6 +105,12 @@ function renderTableHosts({ hosts }) {
                   className="uppercase text-gray-500 text-sm text-left pr-8 cursor-pointer"
                 >
                   Vendor
+                </th>
+                <th
+                  onClick={() => setSortKey("vendor")}
+                  className="uppercase text-gray-500 text-sm text-left pr-8 cursor-pointer"
+                >
+                  Device Type
                 </th>
                 {fields.map((field) => (
                   <th
@@ -171,12 +176,19 @@ function renderTableHosts({ hosts }) {
                       </div>
                       {vendor}
                     </td>
+                    <td
+                      className={`pr-3 ${
+                        host.deviceType === "Unknown" ? "text-gray-500" : ""
+                      }`}
+                    >
+                      {host.deviceType}
+                    </td>
                     {fields.map((field) => (
                       //  ${field === 'spread' ? 'bg-green-' + p.spread * 100 * 1000 : ''}
                       <td
                         key={field}
                         className={`pr-3 ${
-                          field === "mac" && " text-sm text-gray-700"
+                          field === "mac" && " text-sm text-gray-700 font-mono"
                         }`}
                       >
                         {host[field]}
@@ -204,7 +216,11 @@ function renderTableHosts({ hosts }) {
                                 // copy to clipboard
                                 const username =
                                   vendor === "Raspberry Pi" ? "pi" : "root";
-                                copyToClipboard(`ssh ${username}@${host.ip}`);
+                                const cmd = `ssh ${username}@${host.ip}`;
+                                copyToClipboard(cmd);
+                                alert(
+                                  `---\n\n${cmd}\n\n---\nCopied to clipboard!`
+                                );
                               }}
                             >
                               SSH
@@ -252,11 +268,16 @@ function renderTableHosts({ hosts }) {
                           );
 
                         if (port === "554") {
-                          const url = `rtsp://${host.ip}:${port}/Streaming/Channels/1`;
                           return (
                             <span
                               className="mr-1 px-1 py-0.5 rounded-sm text-xs text-white bg-gray-600 font-bold hover:bg-gray-900 cursor-pointer"
-                              onClick={() => copyToClipboard(url)}
+                              onClick={() => {
+                                const url = `rtsp://${host.ip}:${port}/Streaming/Channels/1`;
+                                copyToClipboard(url);
+                                alert(
+                                  `---\n\n${url}\n\n---\nCopied to clipboard!`
+                                );
+                              }}
                             >
                               RTSP
                             </span>
@@ -299,7 +320,7 @@ function renderTableHosts({ hosts }) {
                               href={`http${
                                 ["8443"].includes(port) ? "s" : ""
                               }://${host.ip}:${port}`}
-                              className="mr-1 border px-1 py-0.5 rounded-sm text-xs border-gray-300 hover:border-gray-400 hover:text-gray-600"
+                              className="mr-1 border px-1 py-0.5 rounded-sm text-xs text-gray-400 border-gray-300 hover:border-gray-400 hover:text-gray-700 cursor-pointer"
                               target="_blank"
                             >
                               {port}
@@ -311,7 +332,7 @@ function renderTableHosts({ hosts }) {
                           onClick={() => {
                             setShowingPorts([...showingPorts, host.mac]);
                           }}
-                          className="text-xs hover:underline cursor-pointer"
+                          className="text-xs hover:underline cursor-pointer text-gray-400 hover:text-gray-600"
                         >
                           +{unknownPorts.length} open
                         </a>
