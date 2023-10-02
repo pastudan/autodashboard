@@ -1,0 +1,87 @@
+[
+  {
+    "ip": "10.9.6.68",
+    "mac": "3E:FD:B4:0D:7E:A7",
+    "vendor": null
+  },
+  {
+    "ip": "10.9.6.67",
+    "mac": "96:4A:70:35:6C:85",
+    "vendor": null
+  },
+  {
+    "ip": "10.9.6.66",
+    "mac": "EA:CB:7E:B5:FE:7C",
+    "vendor": null
+  },
+  {
+    "ip": "10.9.6.35",
+    "mac": "CC:F7:35:39:4F:0C",
+    "vendor": "Amazon"
+  },
+  {
+    "ip": "10.9.6.34",
+    "mac": "10:BF:67:6E:28:40",
+    "vendor": "Amazon"
+  },
+  {
+    "ip": "10.9.6.58",
+    "mac": "3C:22:FB:BA:04:C1",
+    "vendor": "Apple,"
+  },
+  {
+    "ip": "10.9.6.38",
+    "mac": "9C:3E:53:1C:F0:55",
+    "vendor": "Apple,"
+  },
+  {
+    "ip": "10.9.6.33",
+    "mac": "9C:3E:53:3A:4D:BB",
+    "vendor": "Apple,"
+  },
+  {
+    "ip": "10.9.6.13",
+    "mac": "18:C0:4D:8E:FF:86",
+    "vendor": "Giga-Byte"
+  },
+  {
+    "ip": "10.9.6.255",
+    "mac": "D8:EB:46:99:DE:F1",
+    "vendor": "Google,"
+  },
+  {
+    "ip": "10.9.6.42",
+    "mac": "D8:EB:46:99:DE:F1",
+    "vendor": "Google,"
+  },
+  {
+    "ip": "10.9.6.36",
+    "mac": "EC:B5:FA:96:A0:B9",
+    "vendor": "Philips"
+  },
+  {
+    "ip": "10.9.6.185",
+    "mac": "E4:5F:01:DF:81:D2",
+    "vendor": "Raspberry"
+  },
+  {
+    "ip": "10.9.6.10",
+    "mac": "E4:5F:01:DF:81:D6",
+    "vendor": "Raspberry"
+  },
+  {
+    "ip": "10.9.6.49",
+    "mac": "E4:5F:01:46:75:E9",
+    "vendor": "Raspberry"
+  },
+  {
+    "ip": "10.9.6.1",
+    "mac": "34:60:F9:5D:FF:93",
+    "vendor": "TP-Link"
+  },
+  {
+    "ip": "10.9.6.37",
+    "mac": "C0:C9:E3:A2:A0:54",
+    "vendor": "Tp-Link"
+  }
+]

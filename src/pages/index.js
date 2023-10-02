@@ -32,7 +32,7 @@ export default function Home() {
         setHosts(payload);
       } else if (type === "host") {
         setHosts((hosts) => {
-          const index = hosts.findIndex((o) => o.id === payload.id);
+          const index = hosts.findIndex((o) => o.mac === payload.mac);
           const newHosts = [...hosts];
           if (index === -1) {
             newHosts.push(payload);
