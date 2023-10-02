@@ -1,3 +1,4 @@
+export { default as Blank } from "./blank";
 export { default as Amazon } from "./amazon";
 export { default as Apple } from "./apple";
 export { default as Arris } from "./arris";
@@ -9,10 +10,12 @@ export { default as Espressif } from "./espressif";
 export { default as Gigabyte } from "./gigabyte";
 export { default as Google } from "./google";
 export { default as Hikvision } from "./hikvision";
+export { default as Homeassistant } from "./homeassistant";
 export { default as Hp } from "./hp";
 export { default as Huawei } from "./huawei";
 export { default as Intel } from "./intel";
 export { default as Lg } from "./lg";
+export { default as Logitech } from "./logitech";
 export { default as Microsoft } from "./microsoft";
 export { default as Nintendo } from "./nintendo";
 export { default as Nokia } from "./nokia";
