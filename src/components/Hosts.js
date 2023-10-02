@@ -20,6 +20,32 @@ const fields = [
   "mac", //key
 ];
 
+async function copyToClipboard(textToCopy) {
+  // Navigator clipboard api needs a secure context (https)
+  if (navigator.clipboard && window.isSecureContext) {
+    await navigator.clipboard.writeText(textToCopy);
+  } else {
+    // Use the 'out of viewport hidden text area' trick
+    const textArea = document.createElement("textarea");
+    textArea.value = textToCopy;
+
+    // Move textarea out of the viewport so it's not visible
+    textArea.style.position = "absolute";
+    textArea.style.left = "-999999px";
+
+    document.body.prepend(textArea);
+    textArea.select();
+
+    try {
+      document.execCommand("copy");
+    } catch (error) {
+      console.error(error);
+    } finally {
+      textArea.remove();
+    }
+  }
+}
+
 function renderIconHosts({ hosts }) {
   return (
     <>
@@ -59,6 +85,7 @@ function renderIconHosts({ hosts }) {
 
 function renderTableHosts({ hosts }) {
   const [sortKey, setSortKey] = useState("vendor");
+  const [showingPorts, setShowingPorts] = useState([]);
 
   hosts = hosts.sort((a, b) => (a[sortKey] > b[sortKey] ? 1 : -1));
 
@@ -108,6 +135,34 @@ function renderTableHosts({ hosts }) {
 
                 let VendorIcon = svg[vendorOneWord];
 
+                const KNOWN_PORTS = [
+                  "22",
+                  "554",
+                  "80",
+                  "443",
+                  "53",
+                  "8123",
+                  "32400",
+                ];
+
+                const knownPorts = (host.ports || [])
+                  .filter((port) => KNOWN_PORTS.includes(port))
+                  .sort((a, b) => {
+                    const aIndex = KNOWN_PORTS.indexOf(a);
+                    const bIndex = KNOWN_PORTS.indexOf(b);
+                    return aIndex > bIndex ? 1 : -1;
+                  });
+
+                console.log(host.ip, {
+                  ip: host.ip,
+                  ports: host.ports,
+                  knownPorts,
+                });
+
+                const unknownPorts = (host.ports || []).filter(
+                  (p) => !KNOWN_PORTS.includes(p.port)
+                );
+
                 return (
                   <tr key={host.ip}>
                     <td className="pr-3 flex items-center">
@@ -140,10 +195,18 @@ function renderTableHosts({ hosts }) {
                       ))}
                     </td> */}
                     <td className="pr-3">
-                      {host.ports?.map((port) => {
+                      {knownPorts.map((port) => {
                         if (port === "22")
                           return (
-                            <span className="mr-1 px-1 py-0.5 rounded-sm text-xs text-white bg-gray-600 font-bold hover:bg-gray-900 cursor-pointer">
+                            <span
+                              className="mr-1 px-1 py-0.5 rounded-sm text-xs text-white bg-gray-600 font-bold hover:bg-gray-900 cursor-pointer"
+                              onClick={() => {
+                                // copy to clipboard
+                                const username =
+                                  vendor === "Raspberry Pi" ? "pi" : "root";
+                                copyToClipboard(`ssh ${username}@${host.ip}`);
+                              }}
+                            >
                               SSH
                             </span>
                           );
@@ -188,19 +251,71 @@ function renderTableHosts({ hosts }) {
                             </a>
                           );
 
-                        return (
-                          <a
-                            key={port}
-                            href={`http${
-                              ["8443"].includes(port) ? "s" : ""
-                            }://${host.ip}:${port}`}
-                            className="mr-1 border px-1 py-0.5 rounded-sm text-xs border-gray-300 hover:border-gray-400 hover:text-gray-600"
-                            target="_blank"
-                          >
-                            {port}
-                          </a>
-                        );
+                        if (port === "554") {
+                          const url = `rtsp://${host.ip}:${port}/Streaming/Channels/1`;
+                          return (
+                            <span
+                              className="mr-1 px-1 py-0.5 rounded-sm text-xs text-white bg-gray-600 font-bold hover:bg-gray-900 cursor-pointer"
+                              onClick={() => copyToClipboard(url)}
+                            >
+                              RTSP
+                            </span>
+                          );
+                        }
+
+                        if (port === "8123")
+                          return (
+                            <a
+                              className="font-bold mr-1 px-1 py-0.5 rounded-md text-xs hover:underline"
+                              href={`http://${host.ip}:${port}`}
+                              target="_blank"
+                            >
+                              <svg.Homeassistant className="w-4 inline-block mr-0.5" />
+                              HomeAssistant{" "}
+                            </a>
+                          );
+
+                        if (port === "32400")
+                          return (
+                            <a
+                              className="font-bold mr-1 px-1 py-0.5 rounded-md text-xs hover:underline"
+                              href={`http://${host.ip}:${port}`}
+                              target="_blank"
+                            >
+                              <svg.Plex className="w-4 inline-block mr-0.5" />
+                              Plex{" "}
+                            </a>
+                          );
                       })}
+
+                      {unknownPorts.length === 0 ? null : showingPorts.includes(
+                          host.mac
+                        ) ? (
+                        unknownPorts.map((port) => {
+                          if (KNOWN_PORTS.includes(port)) return null;
+                          return (
+                            <a
+                              key={port}
+                              href={`http${
+                                ["8443"].includes(port) ? "s" : ""
+                              }://${host.ip}:${port}`}
+                              className="mr-1 border px-1 py-0.5 rounded-sm text-xs border-gray-300 hover:border-gray-400 hover:text-gray-600"
+                              target="_blank"
+                            >
+                              {port}
+                            </a>
+                          );
+                        })
+                      ) : (
+                        <a
+                          onClick={() => {
+                            setShowingPorts([...showingPorts, host.mac]);
+                          }}
+                          className="text-xs hover:underline cursor-pointer"
+                        >
+                          +{unknownPorts.length} open
+                        </a>
+                      )}
                     </td>
                   </tr>
                 );
@@ -246,7 +361,7 @@ export default function Hosts({ connected, hosts }) {
 
   return (
     <>
-      {renderIconHosts({ hosts: iconHosts })}
+      {/* {renderIconHosts({ hosts: iconHosts })} */}
       {renderTableHosts({ hosts: tableHosts })}
     </>
   );
