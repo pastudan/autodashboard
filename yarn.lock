@@ -2611,16 +2611,6 @@ sparkles@^1.0.0:
   resolved "https://registry.yarnpkg.com/sparkles/-/sparkles-1.0.1.tgz#008db65edce6c50eec0c5e228e1945061dd0437c"
   integrity sha512-dSO0DDYUahUt/0/pD/Is3VIm5TGJjludZ0HVymmhYF6eNA53PVLhnUk0znSYbH8IYBuJdCE+1luR22jNLMaQdw==
 
-"streamedian@https://github.com/Streamedian/html5_rtsp_player.git":
-  version "1.8.3"
-  resolved "https://github.com/Streamedian/html5_rtsp_player.git#5229fb7e572718e7ed576301d4046b9d0f81bb76"
-  dependencies:
-    babel-polyfill "^6.26.0"
-    bp_event "^1.1.2"
-    bp_logger "^1.0.3"
-    bp_statemachine "^1.0.13"
-    jsencrypt "git+https://github.com/kreopt/jsencrypt.git"
-
 streamsearch@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/streamsearch/-/streamsearch-1.1.0.tgz#404dd1e2247ca94af554e841a8ef0eaa238da764"
